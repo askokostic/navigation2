@@ -219,7 +219,7 @@ protected:
    */
   double getSizeInMetersZ() const
   {
-    return (size_z_ - 1 + 0.5) * z_resolution_;
+    return size_z_ * z_resolution_;
   }
 
   /**
