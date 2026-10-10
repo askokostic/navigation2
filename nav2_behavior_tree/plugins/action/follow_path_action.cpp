@@ -34,12 +34,14 @@ void FollowPathAction::on_tick()
   getInput("controller_id", goal_.controller_id);
   getInput("goal_checker_id", goal_.goal_checker_id);
   getInput("progress_checker_id", goal_.progress_checker_id);
+  resetFeedbackAndOutputPorts();
 }
 
 BT::NodeStatus FollowPathAction::on_success()
 {
   setOutput("error_code_id", ActionResult::NONE);
   setOutput("error_msg", "");
+  resetFeedbackAndOutputPorts();
   return BT::NodeStatus::SUCCESS;
 }
 
@@ -47,6 +49,7 @@ BT::NodeStatus FollowPathAction::on_aborted()
 {
   setOutput("error_code_id", result_.result->error_code);
   setOutput("error_msg", result_.result->error_msg);
+  resetFeedbackAndOutputPorts();
   return BT::NodeStatus::FAILURE;
 }
 
@@ -65,7 +68,7 @@ void FollowPathAction::on_timeout()
 }
 
 void FollowPathAction::on_wait_for_result(
-  std::shared_ptr<const Action::Feedback>/*feedback*/)
+  std::shared_ptr<const Action::Feedback> feedback)
 {
   // Grab the new path
   nav_msgs::msg::Path new_path;
@@ -101,6 +104,16 @@ void FollowPathAction::on_wait_for_result(
     goal_.progress_checker_id = new_progress_checker_id;
     goal_updated_ = true;
   }
+
+  if (feedback) {
+    setOutput("tracking_feedback", feedback->tracking_feedback);
+  }
+}
+
+void FollowPathAction::resetFeedbackAndOutputPorts()
+{
+  nav2_msgs::msg::TrackingFeedback empty_feedback;
+  setOutput("tracking_feedback", empty_feedback);
 }
 
 }  // namespace nav2_behavior_tree

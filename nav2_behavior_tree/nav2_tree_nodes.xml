@@ -176,6 +176,7 @@
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">Follow path error code. See `FollowPath` action for the enumerated set of error code definitions.</output_port>
       <output_port name="error_msg" type="string">Follow path error message. See `FollowPath` action for the enumerated set of error code definitions.</output_port>
+      <output_port name="tracking_feedback" type="nav2_msgs::msg::TrackingFeedback">Tracking feedback message from the controller server, including cross track error, current path index, remaining path length, etc.</output_port>
     </Action>
 
     <Action ID="NavigateToPose">

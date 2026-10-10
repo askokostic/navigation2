@@ -20,6 +20,7 @@
 
 #include "behaviortree_cpp/json_export.h"
 #include "nav2_msgs/action/follow_path.hpp"
+#include "nav2_msgs/msg/tracking_feedback.hpp"
 #include "nav2_behavior_tree/bt_action_node.hpp"
 
 namespace nav2_behavior_tree
@@ -80,6 +81,11 @@ public:
   void on_timeout() override;
 
   /**
+   * @brief Function to set all feedbacks and output ports to be null values
+   */
+  void resetFeedbackAndOutputPorts();
+
+  /**
    * @brief Function to perform some user-defined operation after a timeout
    * waiting for a result that hasn't been received yet
    * @param feedback shared_ptr to latest feedback message
@@ -102,6 +108,8 @@ public:
         BT::InputPort<std::string>("controller_id", ""),
         BT::InputPort<std::string>("goal_checker_id", ""),
         BT::InputPort<std::string>("progress_checker_id", ""),
+        BT::OutputPort<nav2_msgs::msg::TrackingFeedback>("tracking_feedback",
+          "Tracking feedback from controller server"),
         BT::OutputPort<ActionResult::_error_code_type>(
           "error_code_id", "The follow path error code"),
         BT::OutputPort<std::string>(
