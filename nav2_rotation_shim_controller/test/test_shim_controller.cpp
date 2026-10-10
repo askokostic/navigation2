@@ -423,6 +423,8 @@ TEST(RotationShimControllerTest, computeVelocityGoalRotationTests) {
   node->declare_parameter(
     "PathFollower.rotate_to_goal_heading",
     true);
+  node->declare_parameter("controller_frequency", 1.0);
+  node->declare_parameter("PathFollower.use_collision_detection", false);
 
   auto controller = std::make_shared<RotationShimShim>();
   controller->configure(node, name, tf, costmap);
