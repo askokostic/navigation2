@@ -371,6 +371,11 @@
       <input_port name="error_codes_to_check" type="vector&lt;int&gt;">The set of planner server error codes you wish to compare against the active error code.</input_port>
     </Condition>
 
+    <Condition ID="WouldARouteRecoveryHelp">
+      <input_port name="error_code" type="uint16">The active error code to compare against. This should match the route server error code.</input_port>
+      <input_port name="error_codes_to_check" type="vector&lt;int&gt;">The set of route server error codes you wish to compare against the active error code.</input_port>
+    </Condition>
+
     <Condition ID="WouldASmootherRecoveryHelp">
       <input_port name="error_code" type="uint16">The active error code to compare against. This should match the smoother server error code.</input_port>
       <input_port name="error_codes_to_check" type="vector&lt;int&gt;">The set of smoother server error codes you wish to compare against the active error code.</input_port>
