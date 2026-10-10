@@ -158,9 +158,10 @@ NavigateToPoseNavigator::onLoop()
       throw std::exception();
     }
 
-    // Reset start index if path is updated
-    if (nav2_util::isPathUpdated(current_path,
-        previous_path_) || previous_path_.poses.size() == 0u)
+    // Reset start index if path or goal is updated
+    if (nav2_util::isPathUpdated(current_path, previous_path_) ||
+      nav2_util::isGoalUpdated(current_path, previous_path_) ||
+      previous_path_.poses.size() == 0u)
     {
       start_index_ = 0;
       previous_path_ = current_path;
