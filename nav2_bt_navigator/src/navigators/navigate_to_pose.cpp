@@ -204,7 +204,8 @@ NavigateToPoseNavigator::onLoop()
   res = blackboard->get(
     tracking_feedback_blackboard_id_,
     tracking_feedback);
-  feedback_msg->tracking_error = tracking_feedback.tracking_error;
+  feedback_msg->position_tracking_error = tracking_feedback.position_tracking_error;
+  feedback_msg->heading_tracking_error = tracking_feedback.heading_tracking_error;
 
   bt_action_server_->publishFeedback(feedback_msg);
 }
