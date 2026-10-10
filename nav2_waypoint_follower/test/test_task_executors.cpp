@@ -68,6 +68,7 @@ TEST(WaypointFollowerTest, WaitAtWaypoint)
 TEST(WaypointFollowerTest, InputAtWaypoint)
 {
   auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("testWaypointNode");
+  node->declare_parameter("IAW.timeout", 1.5);
   auto pub = node->create_publisher<std_msgs::msg::Empty>("input_at_waypoint/input", 1);
   pub->on_activate();
   auto publish_message =
@@ -92,7 +93,7 @@ TEST(WaypointFollowerTest, InputAtWaypoint)
 
   auto end_time = node->now();
 
-  EXPECT_NEAR((end_time - start_time).seconds(), 10.0, 0.1);
+  EXPECT_NEAR((end_time - start_time).seconds(), 1.5, 0.1);
 
   // has input now, should work
   std::thread t1(publish_message);

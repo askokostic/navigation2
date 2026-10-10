@@ -64,7 +64,7 @@ void InputAtWaypoint::initialize(
   node->get_parameter(plugin_name + ".enabled", is_enabled_);
   node->get_parameter(plugin_name + ".input_topic", input_topic);
 
-  timeout_ = rclcpp::Duration(timeout, 0.0);
+  timeout_ = rclcpp::Duration::from_seconds(timeout);
 
   RCLCPP_INFO(
     logger_, "InputAtWaypoint: Subscribing to input topic %s.", input_topic.c_str());
