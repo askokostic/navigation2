@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <chrono>
+#include <cmath>
 #include <thread>
 
 #include "gtest/gtest.h"
@@ -92,6 +93,11 @@ public:
   bool getShiftControlSequence()
   {
     return settings_.shift_control_sequence;
+  }
+
+  const xt::xtensor<float, 1> & getCosts() const
+  {
+    return costs_;
   }
 
   void fillOptimizerWithGarbage()
@@ -717,3 +723,53 @@ TEST(OptimizerTests, Omni_openLoopMppiTest)
   EXPECT_LE(wz_delta, model_dt * optimizer_tester.getControlConstraints().az_max);
   EXPECT_LE(vy_delta, model_dt * optimizer_tester.getControlConstraints().ay_max);
 }
+
+class OptimizerIterationTests : public ::testing::TestWithParam<int> {};
+
+TEST_P(OptimizerIterationTests, CostsOnlyIncludeLatestRollouts)
+{
+  auto node = std::make_shared<rclcpp_lifecycle::LifecycleNode>("my_node");
+  OptimizerTester optimizer_tester;
+  node->declare_parameter("controller_frequency", rclcpp::ParameterValue(30.0));
+  node->declare_parameter("mppic.batch_size", rclcpp::ParameterValue(32));
+  node->declare_parameter("mppic.time_steps", rclcpp::ParameterValue(12));
+  node->declare_parameter("mppic.iteration_count", rclcpp::ParameterValue(GetParam()));
+  node->declare_parameter("mppic.gamma", rclcpp::ParameterValue(0.0));
+  node->declare_parameter("mppic.regenerate_noises", rclcpp::ParameterValue(false));
+  node->declare_parameter(
+    "mppic.critics", rclcpp::ParameterValue(std::vector<std::string>{"GoalCritic"}));
+  node->declare_parameter("mppic.GoalCritic.cost_weight", rclcpp::ParameterValue(1.0));
+  auto costmap_ros = std::make_shared<nav2_costmap_2d::Costmap2DROS>(
+    "dummy_costmap", "", "dummy_costmap", true);
+  ParametersHandler param_handler(node);
+  rclcpp_lifecycle::State lstate;
+  costmap_ros->on_configure(lstate);
+  optimizer_tester.initialize(node, "mppic", costmap_ros, &param_handler);
+
+  geometry_msgs::msg::PoseStamped pose;
+  pose.pose.orientation.w = 1.0;
+  geometry_msgs::msg::Twist speed;
+  auto goal = pose.pose;
+  goal.position.x = 1.0;
+  goal.position.y = 0.6;
+  nav_msgs::msg::Path path;
+  path.poses = {pose, pose};
+  path.poses.back().pose = goal;
+  optimizer_tester.evalControl(pose, speed, path, goal, nullptr);
+
+  // With only GoalCritic and gamma zero, costs must equal the current mean goal distance.
+  const auto & trajectories = optimizer_tester.getGeneratedTrajectories();
+  const auto & costs = optimizer_tester.getCosts();
+  for (size_t row = 0; row < trajectories.x.shape(0); ++row) {
+    double distance_sum = 0.0;
+    for (size_t col = 0; col < trajectories.x.shape(1); ++col) {
+      distance_sum += std::hypot(
+        trajectories.x(row, col) - goal.position.x,
+        trajectories.y(row, col) - goal.position.y);
+    }
+    EXPECT_NEAR(costs(row), distance_sum / trajectories.x.shape(1), 1e-5);
+  }
+  optimizer_tester.shutdown();
+}
+
+INSTANTIATE_TEST_SUITE_P(IterationCounts, OptimizerIterationTests, ::testing::Values(1, 2, 3));
