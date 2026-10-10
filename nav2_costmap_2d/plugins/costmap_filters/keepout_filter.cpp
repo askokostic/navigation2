@@ -169,7 +169,35 @@ void KeepoutFilter::updateBounds(
 
   CostmapFilter::updateBounds(robot_x, robot_y, robot_yaw, min_x, min_y, max_x, max_y);
 
-  if(!has_updated_data_) {
+  std::lock_guard<CostmapFilter::mutex_t> guard(*getMutex());
+
+  // Let's find the pose's cost if we are allowed to override the lethal cost
+  const bool was_pose_lethal = is_pose_lethal_;
+  is_pose_lethal_ = false;
+  if (override_lethal_cost_ && filter_mask_) {
+    geometry_msgs::msg::Pose2D pose;
+    pose.x = robot_x;
+    pose.y = robot_y;
+    pose.theta = robot_yaw;
+    geometry_msgs::msg::Pose2D mask_pose;
+    if (transformPose(global_frame_, pose, filter_mask_->header.frame_id, mask_pose)) {
+      unsigned int mask_robot_i, mask_robot_j;
+      if (worldToMask(filter_mask_, mask_pose.x, mask_pose.y, mask_robot_i, mask_robot_j)) {
+        auto data = getMaskCost(filter_mask_, mask_robot_i, mask_robot_j);
+        is_pose_lethal_ = (data == INSCRIBED_INFLATED_OBSTACLE || data == LETHAL_OBSTACLE);
+        if (is_pose_lethal_) {
+          RCLCPP_WARN_THROTTLE(
+            logger_, *(clock_), 2000,
+            "KeepoutFilter: Pose is in keepout zone, reducing cost override to navigate out.");
+        }
+      }
+    }
+  }
+
+  // If new keepout zone received, or the robot went into or out of a keepout zone,
+  // update the full mask area. The other layers can report no bounds,
+  // e.g. the static layer of a non-rolling costmap.
+  if (!has_updated_data_ && is_pose_lethal_ == was_pose_lethal) {
     return;
   }
 
@@ -189,7 +217,7 @@ void KeepoutFilter::updateBounds(
 void KeepoutFilter::process(
   nav2_costmap_2d::Costmap2D & master_grid,
   int min_i, int min_j, int max_i, int max_j,
-  const geometry_msgs::msg::Pose2D & pose)
+  const geometry_msgs::msg::Pose2D & /*pose*/)
 {
   std::lock_guard<CostmapFilter::mutex_t> guard(*getMutex());
 
@@ -289,26 +317,11 @@ void KeepoutFilter::process(
   unsigned int mg_max_x_u = static_cast<unsigned int>(mg_max_x);
   unsigned int mg_max_y_u = static_cast<unsigned int>(mg_max_y);
 
-  // Let's find the pose's cost if we are allowed to override the lethal cost
-  bool is_pose_lethal = false;
+  // updateBounds() found the pose's cost
   if (override_lethal_cost_) {
-    geometry_msgs::msg::Pose2D mask_pose;
-    if (transformPose(global_frame_, pose, filter_mask_->header.frame_id, mask_pose)) {
-      unsigned int mask_robot_i, mask_robot_j;
-      if (worldToMask(filter_mask_, mask_pose.x, mask_pose.y, mask_robot_i, mask_robot_j)) {
-        auto data = getMaskCost(filter_mask_, mask_robot_i, mask_robot_j);
-        is_pose_lethal = (data == INSCRIBED_INFLATED_OBSTACLE || data == LETHAL_OBSTACLE);
-        if (is_pose_lethal) {
-          RCLCPP_WARN_THROTTLE(
-            logger_, *(clock_), 2000,
-            "KeepoutFilter: Pose is in keepout zone, reducing cost override to navigate out.");
-        }
-      }
-    }
-
     // If in lethal space or just exited lethal space,
     // we need to update all possible spaces touched during this state
-    if (is_pose_lethal || (last_pose_lethal_ && !is_pose_lethal)) {
+    if (is_pose_lethal_ || (last_pose_lethal_ && !is_pose_lethal_)) {
       lethal_state_update_min_x_ = std::min(mg_min_x_u, lethal_state_update_min_x_);
       mg_min_x_u = lethal_state_update_min_x_;
       lethal_state_update_min_y_ = std::min(mg_min_y_u, lethal_state_update_min_y_);
@@ -363,7 +376,7 @@ void KeepoutFilter::process(
         }
 
         if (data > old_data || old_data == NO_INFORMATION) {
-          if (override_lethal_cost_ && is_pose_lethal) {
+          if (override_lethal_cost_ && is_pose_lethal_) {
             master_array[index] = lethal_override_cost_;
           } else {
             master_array[index] = data;
@@ -373,7 +386,7 @@ void KeepoutFilter::process(
     }
   }
 
-  last_pose_lethal_ = is_pose_lethal;
+  last_pose_lethal_ = is_pose_lethal_;
 }
 
 void KeepoutFilter::resetFilter()
