@@ -248,8 +248,9 @@ NavigateThroughPosesNavigator::initializeGoalPoses(ActionT::Goal::ConstSharedPtr
   auto blackboard = bt_action_server_->getBlackboard();
   blackboard->set("number_recoveries", 0);  // NOLINT
 
-  // Update the goal pose on the blackboard
+  // Update the goal pose and path on the blackboard
   blackboard->set<Goals>(goals_blackboard_id_, std::move(goal_poses));
+  blackboard->set<nav_msgs::msg::Path>(path_blackboard_id_, nav_msgs::msg::Path());
 
   return true;
 }

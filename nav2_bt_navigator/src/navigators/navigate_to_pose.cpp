@@ -259,8 +259,9 @@ NavigateToPoseNavigator::initializeGoalPose(ActionT::Goal::ConstSharedPtr goal)
   auto blackboard = bt_action_server_->getBlackboard();
   blackboard->set("number_recoveries", 0);  // NOLINT
 
-  // Update the goal pose on the blackboard
+  // Update the goal pose and path on the blackboard
   blackboard->set(goal_blackboard_id_, goal_pose);
+  blackboard->set(path_blackboard_id_, nav_msgs::msg::Path());
 
   return true;
 }
