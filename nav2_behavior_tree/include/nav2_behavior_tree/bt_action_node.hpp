@@ -187,6 +187,15 @@ public:
   }
 
   /**
+   * @brief Function to perform work in a BT Node when the action server times out
+   * Such as setting the error code ID status to timed out for action clients.
+   */
+  virtual void on_timeout()
+  {
+    return;
+  }
+
+  /**
    * @brief The main override required by a BT action
    * @return BT::NodeStatus Status of tick execution
    */
@@ -371,6 +380,7 @@ protected:
         action_name_.c_str());
     }
     future_goal_handle_.reset();
+    on_timeout();
   }
 
   /**
