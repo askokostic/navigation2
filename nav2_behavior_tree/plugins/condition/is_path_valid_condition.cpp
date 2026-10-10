@@ -61,7 +61,7 @@ BT::NodeStatus IsPathValidCondition::tick()
   request->consider_unknown_as_obstacle = consider_unknown_as_obstacle_;
   request->layer_name = layer_name_;
   request->footprint = footprint_;
-  request->check_full_path = check_full_path_;
+  request->stop_at_first_collision = !check_full_path_;
   auto result = client_->async_send_request(request);
 
   if (rclcpp::spin_until_future_complete(node_, result, server_timeout_) !=
