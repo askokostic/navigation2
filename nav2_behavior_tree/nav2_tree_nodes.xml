@@ -14,6 +14,7 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `backup` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">Backup error code. See `BackUp` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Backup error message. See `BackUp` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="DriveOnHeading">
@@ -23,6 +24,7 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `drive_on_heading` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">Drive on heading error code. See `DriveOnHeading` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Drive on heading error message. See `DriveOnHeading` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="CancelControl">
@@ -93,6 +95,7 @@
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="path" type="nav_msgs::msg::Path">Path created by action server. Takes in a blackboard variable, e.g. "{path}".</output_port>
       <output_port name="error_code_id" type="uint16">Compute path to pose error code. See `ComputePathToPose` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Compute path to pose error message. See `ComputePathToPose` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="ComputePathThroughPoses">
@@ -103,6 +106,7 @@
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="path" type="nav_msgs::msg::Path">Path created by action server. Takes in a blackboard variable, e.g. "{path}".</output_port>
       <output_port name="error_code_id" type="uint16">Compute path through poses error code. See `ComputePathThroughPoses` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Compute path through poses error message. See `ComputePathThroughPoses` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="ComputeRoute">
@@ -118,6 +122,7 @@
       <output_port name="path" type="nav_msgs::msg::Path">Path created by action server. Takes in a blackboard variable, e.g. "{path}".</output_port>
       <output_port name="planning_time" type="builtin_interfaces::msg::Duration">Time it took to compute the route.</output_port>
       <output_port name="error_code_id" type="uint16">Compute route error code. See `ComputeRoute` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Compute route error message. See `ComputeRoute` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="ComputeAndTrackRoute">
@@ -137,6 +142,7 @@
       <output_port name="path" type="nav_msgs::msg::Path">Path created by ComputeAndTrackRoute node.</output_port>
       <output_port name="rerouted" type="bool">Whether the plan has rerouted.</output_port>
       <output_port name="error_code_id" type="uint16">Compute route error code. See `ComputeAndTrackRoute` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Compute route error message. See `ComputeAndTrackRoute` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="RemovePassedGoals">
@@ -158,6 +164,7 @@
       <output_port name="smoothing_duration" type="double">The actual duration used for smoothing.</output_port>
       <output_port name="was_completed" type="bool">Indicates if the smoothing process was completed. Will return `false` if `check_for_collisions` is set to `true` and a collision is detected.</output_port>
       <output_port name="error_code_id" type="uint16">Follow smoother error code. See `SmoothPath` action for the enumerated set of error code definitions.</output_port>
+      <output_port name="error_msg" type="string">Follow smoother error message. See `SmoothPath` action for the enumerated set of error code definitions.</output_port>
     </Action>
 
     <Action ID="FollowPath">
@@ -168,6 +175,7 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `follow_path` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">Follow path error code. See `FollowPath` action for the enumerated set of error code definitions.</output_port>
+      <output_port name="error_msg" type="string">Follow path error message. See `FollowPath` action for the enumerated set of error code definitions.</output_port>
     </Action>
 
     <Action ID="NavigateToPose">
@@ -176,6 +184,7 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `navigate_to_pose` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">The lowest error code in the list of the `error_code_names` parameter.</output_port>
+      <output_port name="error_msg" type="string">The error messages associated with the lowest error code in the list of the `error_code_name_prefixes` + `_error_code` suffix parameter.</output_port>
     </Action>
 
     <Action ID="NavigateThroughPoses">
@@ -184,6 +193,7 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `navigate_through_poses` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">The lowest error code in the list of the `error_code_names` parameter.</output_port>
+      <output_port name="error_msg" type="string">The error message associated with the lowest error code in the list of the `error_code_name_prefixes` + `_error_code` suffix parameter.</output_port>
     </Action>
 
     <Action ID="ReinitializeGlobalLocalization">
@@ -246,12 +256,15 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `spin` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">Spin error code. See `Spin` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Spin error message. See `Spin` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="Wait">
       <input_port name="wait_duration" type="double" default="1.0">Wait time (s).</input_port>
       <input_port name="server_name" type="string">Action server name. If not specified, `wait` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
+      <output_port name="error_code_id" type="uint16">Wait error code. See `Wait` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Wait error message. See `Wait` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="AssistedTeleop">
@@ -260,6 +273,7 @@
       <input_port name="server_name" type="string">Action server name. If not specified, `assisted_teleop` is used.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Action server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
       <output_port name="error_code_id" type="uint16">Assisted teleop error code. See `AssistedTeleop` action message for the enumerated set of error codes.</output_port>
+      <output_port name="error_msg" type="string">Assisted teleop error message. See `AssistedTeleop` action message for the enumerated set of error codes.</output_port>
     </Action>
 
     <Action ID="DockRobot">
