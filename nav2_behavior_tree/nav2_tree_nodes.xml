@@ -350,6 +350,8 @@
 
     <Condition ID="IsPathValid">
       <input_port name="path" type="nav_msgs::msg::Path">The global path to check for validity.</input_port>
+      <input_port name="max_cost" type="unsigned int" default="254">The maximum allowable cost for the path to be considered valid.</input_port>
+      <input_port name="consider_unknown_as_obstacle" type="bool" default="false">Whether to consider unknown cost (255) as obstacle.</input_port>
       <input_port name="server_timeout" type="chrono::milliseconds">Service server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
     </Condition>
 
