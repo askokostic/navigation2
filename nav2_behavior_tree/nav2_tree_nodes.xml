@@ -318,6 +318,18 @@
       <output_port name="output_path" type="nav_msgs::msg::Path">Output concatenated path.</output_port>
     </Action>
 
+    <Action ID="ValidatePath">
+      <input_port name="path" type="nav_msgs::msg::Path">The global path to check for validity.</input_port>
+      <input_port name="max_cost" type="unsigned int" default="254">The maximum allowable cost for the path to be considered valid.</input_port>
+      <input_port name="consider_unknown_as_obstacle" type="bool" default="false">Whether to consider unknown cost (255) as obstacle.</input_port>
+      <input_port name="check_full_path" type="bool" default="false">Whether to check all poses (true) or stop at the first invalid pose (false).</input_port>
+      <input_port name="layer_name" type="string" default="&quot;&quot;">Name of the specific costmap layer to check against. If empty, checks against the full costmap.</input_port>
+      <input_port name="footprint" type="string" default="&quot;&quot;">Custom footprint specification as a bracketed array of arrays, e.g., "[[x1,y1],[x2,y2],...]". If empty, uses the robot's configured footprint.</input_port>
+      <input_port name="server_timeout" type="chrono::milliseconds">Service server timeout (ms). If not provided, uses the BT Navigator's `default_server_timeout` parameter value (20 ms by default).</input_port>
+      <input_port name="service_name" type="string">Costmap service name responsible for getting the cost. If not specified, `is_path_valid` is used.</input_port>
+      <output_port name="collision_poses" type="vector&lt;geometry_msgs::msg::PoseStamped&gt;">Vector of poses in the path that are in collision or invalid. Empty if the path is valid.</output_port>
+    </Action>
+
     <!-- ############################### CONDITION NODES ############################## -->
     <Condition ID="GoalReached">
       <input_port name="goal" type="geometry_msgs::msg::PoseStamped">Destination to check. Takes in a blackboard variable, e.g. "{goal}".</input_port>

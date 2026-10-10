@@ -80,6 +80,9 @@ list(APPEND plugin_libs nav2_assisted_teleop_cancel_bt_node)
 add_library(nav2_drive_on_heading_cancel_bt_node SHARED plugins/action/drive_on_heading_cancel_node.cpp)
 list(APPEND plugin_libs nav2_drive_on_heading_cancel_bt_node)
 
+add_library(validate_path_action_bt_node SHARED plugins/action/validate_path_action.cpp)
+list(APPEND plugin_libs validate_path_action_bt_node)
+
 add_library(nav2_smooth_path_action_bt_node SHARED plugins/action/smooth_path_action.cpp)
 list(APPEND plugin_libs nav2_smooth_path_action_bt_node)
 
