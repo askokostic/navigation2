@@ -9,6 +9,7 @@ add_library(${library_name} SHARED
   node_thread.cpp
   odometry_utils.cpp
   array_parser.cpp
+  path_utils.cpp
 )
 target_include_directories(${library_name}
   PUBLIC

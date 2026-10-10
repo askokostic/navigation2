@@ -34,6 +34,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/RouteNode.msg"
   "msg/RouteEdge.msg"
   "msg/EdgeCost.msg"
+  "msg/TrackingFeedback.msg"
   "srv/GetCost.srv"
   "srv/GetCostmap.srv"
   "srv/IsPathValid.srv"

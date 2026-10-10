@@ -51,3 +51,6 @@ target_link_libraries(test_twist_subscriber ${library_name} rclcpp::rclcpp ${geo
 
 ament_add_gtest(test_validation_messages test_validation_messages.cpp)
 target_link_libraries(test_validation_messages ${library_name} ${builtin_interfaces_TARGETS} ${std_msgs_TARGETS} ${geometry_msgs_TARGETS})
+
+ament_add_gtest(test_path_utils test_path_utils.cpp)
+target_link_libraries(test_path_utils ${library_name} rclcpp::rclcpp ${geometry_msgs_TARGETS})
